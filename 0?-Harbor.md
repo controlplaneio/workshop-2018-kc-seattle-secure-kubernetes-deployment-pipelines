@@ -10,26 +10,25 @@ To install Harbor run:
 kubectl apply -f setup/harbor.yaml
 ```
 
-Head to  `https://192.168.99.100:30003/harbor/sign-in` to login to the Harbor UI. Username is `admin`, password is `kubecon1234`.
+Head to `https://192.168.99.100:30003/harbor/sign-in` to login to the Harbor UI. Username is `admin`, password is `kubecon1234`. 
 
-Configure content trust and image scanning for the default library project by selecting the library project, clicking the `Configuration` tab, unticking the first box and ticking all the others. This ensures that Harbor does the following:
+> Note: Your browser will probably complain that this connection is insecure. This is because to simplify this tutorial we told Harbor to use a self-signed certificate. Production systems/pipelines however, should use certificates signed by a trusted CA where possible.
 
-- Auths users when pulling images from the registry.
+Configure content trust and image scanning for the default library project by selecting the `library` project, clicking the `Configuration` tab, unticking the first box and ticking all the others. This ensures that Harbor does the following:
+
+- Auths users when pushing/pulling images from the registry.
 - Only allows signed images to be pulled from the registry.
 - Prevents any vulnerable images from being pulled from the registry.
 - Automatically scans any images pushed to the registry for vulnerabilities.
 
-Add your newly deployed registry located at `192.168.99.100:30003` to the list of insecure registries your Docker daemon is allowed to talk to. Do this by editing the daemon.json file, whose default location is `/etc/docker/daemon.json` on Linux. If you use Docker for Mac or Docker for Windows, click the Docker icon, choose Preferences, and choose Daemon.
+## Add Harbor to your list of insecure registries
 
-If the daemon.json file does not exist, create it. Assuming there are no other settings in the file, it should have the following contents:
-```json
-{
-  "insecure-registries" : ["192.168.99.100:30003"]
-}
-```
+Rather than mess around with your trusted CAs we will just whitelist the Harbor instance as an insecure registry. This will tell Docker that it doesn't need to verify that the certs it was presented with were signed by a trusted CA. Again, production systems/pipelines should use certificates signed by trusted CAs where possible.
 
-> Note because we can't get a certificate for our minikube IP address signed by a root CA we have to inform everything interacting with this registry to not verify certificates when communicating. Production systems/pipelines should verify certificates when interacting with a registry.
+
 
 TODO:
-* Add step to add insecure registry to minikube docker daemon
+* Add screen grab of repo config to be more explicit
+* Try to get self-signed ca working with Docker CLI
+* Try to get self-signed ca working with Minikube Docker
 * Verify all these steps work by successfully deploying a new application to minikube via Harbor
