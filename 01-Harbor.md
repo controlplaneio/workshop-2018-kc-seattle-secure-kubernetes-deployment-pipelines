@@ -42,7 +42,7 @@ Verify that Harbor is now trusted by logging in to the registry.
 docker login -u admin -p kubecon1234 192.168.99.100:30003
 ```
 
-### Configure Harbor project to use Notary and Clair
+### Configure Harbor project to use Clair
 
 Head to `https://192.168.99.100:30003/harbor/sign-in` to login to the Harbor UI. Username is `admin`, password is `kubecon1234`.
 
