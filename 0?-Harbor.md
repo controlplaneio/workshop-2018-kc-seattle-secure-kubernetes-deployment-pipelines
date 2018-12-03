@@ -14,7 +14,7 @@ kubectl apply -f setup/harbor.yaml
 
 Retrieve the CA cert from Kubernetes
 ```bash
-kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -D > harbor-ca.crt
+kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -d > harbor-ca.crt
 ```
 
 Add trusted root certificate
