@@ -6,6 +6,12 @@ Signing your images allows you to cryptographically verify the content of that i
 
 Notary is a tool that manages signatures. It implements The Update Framework (TUF) (TODO add explanation of TUF). Both Notary and TUF are CNCF projects. Using Notary, you can digitally sign and then verify the content of your container images at deploy time via their digest. Notary is typically integrated alongside a container registry to provide this functionality. In this tutorial, we use Harbor as both the registry and the notary server.
 
+1. Disable content trust (in case it was installed), then pull an image from the Docker registry to use in the tutorial:
+    ```bash
+    export DOCKER_CONTENT_TRUST=0
+    docker pull hello-world
+    ```
+    > TODO: this could be the https://github.com/lukebond/demo-api as we want users to build and change it, but maybe not necessary until later?
 1. Enable Docker Content Trust.
     ```bash
     export DOCKER_CONTENT_TRUST=1
@@ -18,21 +24,25 @@ Notary is a tool that manages signatures. It implements The Update Framework (TU
     Make sure to set these passphrases to something that you remember, because you'll need to refer back to them. In this demo they can be the same thing, but in production it's safer to use different passphrases for each key.
 
     ```bash
-    docker pull hello-world
-    docker tag hello-world 192.168.99.100:30003/my-image:latest
-    docker push 192.168.99.100:30003/my-image:latest
+    docker tag hello-world 192.168.99.100:30003/library/my-image:latest
+    docker push 192.168.99.100:30003/library/my-image:latest
     ```
-3. You can check your image signature by using `docker trust inspect 192.168.99.100:30003/my-image:latest`.
+    
+    > Here, `library` refers to the Project configured by default in Harbor
+    
+3. You can check your image signature by using `docker trust inspect 192.168.99.100:30003/library/my-image:latest`.
 
 4. You've signed the image already using the repository key, but this key doesn't prove your identity. The repository key is also unique to that image repository, so you'll create different keys for each image repository that you sign. Notary lets the repository key holder add other people's key pairs so that they can sign the image.
     1. Create a signing key called `portierisdemo`.
         ```bash
+        cd ~
         docker trust key generate portierisdemo
         ```
         The private key goes in to your Docker Content Trust directory. The public key is saved to `portierisdemo.pub` in your working directory.
+        
     2. Add your key as a signer in Notary.
         ```bash
-        docker trust signer add --key=portierisdemo.pub portierisdemo 192.168.99.100:30003/my-image
+        docker trust signer add --key=portierisdemo.pub portierisdemo 192.168.99.100:30003/library/my-image
         ```
 
 5. Let's push the same image, but unsigned, for comparison:
@@ -42,6 +52,10 @@ Notary is a tool that manages signatures. It implements The Update Framework (TU
     docker push 192.168.99.100:30003/my-unsigned-image:latest
     ```
 
+1. To see the trust files stored on disk, examine the local `~/.docker` directory:
+    ```bash
+    tree ~/.docker
+    ```
 ## Portieris
 
 Portieris is a Kubernetes admission controller, open sourced by IBM. It integrates Notary image signing into your deployment pipelines by telling the Kubernetes API server to check with it whenever a resource that results in an image being run is created. It does this via a Mutating Admission Webhook.
@@ -77,7 +91,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
     4. Let's enable trust enforcement for our image. Create a new element in the `repositories` list, after the `*`:
         ```yaml
         repositories:
-            - name: "192.168.99.100:30003/my-image"
+            - name: "192.168.99.100:30003/library/my-image"
               policy:
                 trust:
                   enabled: true
@@ -128,7 +142,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
     10. Sign the image using your `portierisdemo` key. Images are automatically signed using all the keys that you have, so running the sign command adds a signature for your newly created key.
         ```bash
-        docker trust sign 192.168.99.100:30003/my-image:latest
+        docker trust sign 192.168.99.100:30003/library/my-image:latest
         ```
 
     11. Try to deploy your signed image once more. This time, the deployment is allowed.

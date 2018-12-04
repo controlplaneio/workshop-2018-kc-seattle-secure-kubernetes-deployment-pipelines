@@ -19,23 +19,25 @@ kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base
 
 Add trusted root certificate
 
-OSX
+#### OSX
 ```bash
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain harbor-ca.crt
 # Then restart your Docker Daemon for it to take effect.
 ```
 
-Ubuntu/Debian
+#### Ubuntu/Debian
 ```bash
 sudo cp harbor-ca.crt /usr/local/share/ca-certificates/harbor-ca.crt
 sudo update-ca-certificates
 ```
 
-Windows
+#### Windows
 ```bash
 certutil -addstore -f "ROOT" harbor-ca.crt
 # Then restart your Docker Daemon for it to take effect.
 ```
+
+### Verify
 
 Verify that Harbor is now trusted by logging in to the registry.
 ```bash
