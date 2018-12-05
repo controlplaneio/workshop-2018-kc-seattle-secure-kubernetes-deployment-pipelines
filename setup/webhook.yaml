@@ -1,0 +1,21 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: portieris-admission-webhook
+  namespace: ibm-system
+  labels:
+    app: portieris
+webhooks:
+  - name: trust.hooks.securityenforcement.admission.cloud.ibm.com
+    clientConfig:
+      service:
+        name: portieris
+        namespace: ibm-system
+        path: "/admit"
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNyRENDQVpRQ0NRRFIvY2VZV3J6aklUQU5CZ2txaGtpRzl3MEJBUXNGQURBWE1SVXdFd1lEVlFRRERBeHcKYjNKMGFXVnlhWE5mWTJFd0lCY05NVGd4TVRJMU1EQXlNekExV2hnUE1qSTVNakE1TURrd01ESXpNRFZhTUJjeApGVEFUQmdOVkJBTU1ESEJ2Y25ScFpYSnBjMTlqWVRDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDCkFRb0NnZ0VCQUttNGpoaW1oeWZCZk1GckZrQ20vWGhVOFUxME4zYzAwTkl5WnZEK3NuazcyVFgyeWlFNklpd3YKeDlicWoycityQXI2d0ppbzNWRWpCZWVoZ0dVekRHYUgyelp5OUVMRXd2N3VRMThoMWxGRGRRWTF2MGQrcm91KwpEQkNDbzdaazlaMElsaDRRYlMraDZMU29xYzd5bmJZV0EvTmswNzRiQWw5elU0ZnZoRFdPMER6MHFWZ0Q5ODhmCkRXeUtidUlka0ZRM3RkUERqMHFnVFVSOEcvbDRLelI5bXU2ZDB4dTh6QmI4b3A4K29KVG41VkxVM3hYNlRGaTYKbkJXVlRnRjA4WTM1SHJuaEM2RCtHbk5ZZElDS2xjajBUdUtzTzBCU2JpUm43dWVyeUc0MkR6NjRLUDFRYXJ0NQo4Slg4N1lOVnJDQWNMcWhORGVuOWgvMXAzMTUzM1hjQ0F3RUFBVEFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBCk5Cd1dIRTZmVkhiaFgxN084ejFFcGJZb1Jid0RKNnZlcUI4VTRMRkVzTGZ3MVpDTDkvcTNNSHZDblZ6UmNwU2IKV3ZxcGxLUGxVeGVLblhZSHpPUWN1b0pSeTU2czc2TGxycy85Yk11MmxPOWlxQVRHanZFVDZHYjlEUGxjM1ZTRgp3MlhqZFMybEJlYUk4NUlWUW5rMmlvUU0wT2gzU2NDOXVGTkVPNndkTVExVE1aQVFnR2FHZG4wV3Z6bVhJRm1VCmFCM21iRmUxejhFa1ZmbXZWWmxVdzgxYzhSRzlKcU1KTHRUQnZyTWFrUmoxVDJQRzJ6VGNrNEhEbmtwM1lKRWYKZTFYdUNQdUUzNGJpV0w4blc2K3dJSFFHTEJxYS9yUVMrQkc2MVRPN3lqTkZ0YTZvVHdmMmc2QW1xQkdtK3M0Kwo5Nmdac3FuYzlTWUJLR3prQUt6RW5nPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    rules:
+      - operations: [ "CREATE", "UPDATE" ]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["pods", "deployments", "replicationcontrollers", "replicasets", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+    failurePolicy: Fail
