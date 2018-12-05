@@ -62,28 +62,28 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
 1. Install Portieris.
 
-    Add self signing CA to Portieris deployemnt
-    ```bash
-    sed -i '' "s/ca.pem: <sed-me>/ca.pem: $(cat ca.crt | base64)/" setup/portieris.yaml
-    ```
+    1. Add self signing CA to Portieris deployemnt
+        ```bash
+        sed -i '' "s/ca.pem: <sed-me>/ca.pem: $(cat ca.crt | base64)/" setup/portieris.yaml
+        ```
 
-    Deploy Portieris
-    ```bash
-    kubectl create ns ibm-system
-    kubectl apply -f setup/portieris.yaml
-    ```
+    2. Deploy Portieris
+        ```bash
+        kubectl create ns ibm-system
+        kubectl apply -f setup/portieris.yaml
+        ```
 
-    Verify that Portieris is running
-    ```bash
-    kubectl get pods -n ibm-system
-    NAME                         READY   STATUS    RESTARTS   AGE
-    portieris-84f9cb7746-bxxqm   1/1     Running   0          18s
-    ```
+    3. Verify that Portieris is running
+        ```bash
+        kubectl get pods -n ibm-system
+        NAME                         READY   STATUS    RESTARTS   AGE
+        portieris-84f9cb7746-bxxqm   1/1     Running   0          18s
+        ```
 
-    Tell Kubernetes to ask Portieris if a given resource is OK to deploy.
-    ```bash
-    kubectl apply -f setup/webhook.yaml
-    ```
+    4. Tell Kubernetes to ask Portieris if a given resource is OK to deploy.
+        ```bash
+        kubectl apply -f setup/webhook.yaml
+        ```
 
     Portieris installs two custom Kubernetes resources for managing it: ImagePolicies and ClusterImagePolicies. If an ImagePolicy exists in the same Kubernetes namespace as your resources, Portieris uses that to decide what rules to enforce on your resources. Otherwise, Portieris uses the ClusterImagePolicy.
 
