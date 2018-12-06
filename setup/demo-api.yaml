@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: demo-api
-        image: "192.168.99.100:30003/library/demo-api:v1"
+        image: "192.168.99.100:30003/library/demo-api:v"
         imagePullPolicy: "Always"
 ---
 apiVersion: v1
