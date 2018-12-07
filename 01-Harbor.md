@@ -13,6 +13,7 @@ kubectl apply -f setup/harbor.yaml
 ### Add the Harbor CA to your machine's trusted CAs
 
 Retrieve the CA cert from Kubernetes
+
 ```bash
 kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -d > harbor-ca.crt
 ```
@@ -20,18 +21,21 @@ kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base
 Add trusted root certificate
 
 #### OSX
+
 ```bash
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain harbor-ca.crt
 # Then restart your Docker Daemon for it to take effect.
 ```
 
 #### Ubuntu/Debian
+
 ```bash
 sudo cp harbor-ca.crt /usr/local/share/ca-certificates/harbor-ca.crt
 sudo update-ca-certificates
 ```
 
 #### Windows
+
 ```bash
 certutil -addstore -f "ROOT" harbor-ca.crt
 # Then restart your Docker Daemon for it to take effect.
@@ -40,6 +44,7 @@ certutil -addstore -f "ROOT" harbor-ca.crt
 ### Verify
 
 Verify that Harbor is now trusted by logging in to the registry.
+
 ```bash
 docker login -u admin -p kubecon1234 192.168.99.100:30003
 ```
