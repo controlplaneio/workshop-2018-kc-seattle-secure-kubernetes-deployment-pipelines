@@ -6,10 +6,9 @@ Instructions can be found [here](https://kubernetes.io/docs/tasks/tools/install-
 
 ## Install Docker
 
-> You must have a recent version (18.05+) of Docker to use the `docker trust` commands in this workshop 
+You must have a recent version (18.05+) of Docker to use the `docker trust` commands in this workshop.
 
 Instructions can be found [here](https://docs.docker.com/install/).
-
 
 ## Install Minikube
 
