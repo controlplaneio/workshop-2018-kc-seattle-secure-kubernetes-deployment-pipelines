@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: demo-api
-        image: "192.168.99.100:30003/library/demo-api:vulnerable"
+        image: "<Minikube_IP>:30003/library/demo-api:vulnerable"
         imagePullPolicy: "Always"
 ---
 apiVersion: v1
