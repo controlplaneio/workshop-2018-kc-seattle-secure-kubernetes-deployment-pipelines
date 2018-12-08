@@ -86,7 +86,7 @@ In the Harbor UI, enter the library project and view the demo-api image. The vul
 
 ### Deploy vulnerable image
 
-Edit the setup/demo-api.yaml file by replacing your Enter the workshop repo and attempt to deploy the image from the registry into your minikube cluster.
+Enter the workshop repo and attempt to deploy the image from the registry into your minikube cluster.
 
 ```bash
 kubectl apply -f setup/demo-api.yaml
