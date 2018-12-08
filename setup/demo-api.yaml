@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: demo-api
-        image: "192.168.99.100:30003/library/demo-api:v1"
+        image: "<Minikube_IP>:30003/library/demo-api:vulnerable"
         imagePullPolicy: "Always"
 ---
 apiVersion: v1
@@ -30,7 +30,7 @@ spec:
   ports:
     - protocol: TCP
       port: 9000
-      targetPort: 9000
+      nodePort: 30009
   selector:
     app: "demo-api"
   type: NodePort
