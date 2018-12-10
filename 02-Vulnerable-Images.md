@@ -48,8 +48,8 @@ To fix this, we need to update the dockerfile with a secure base image.
 In the Dockerfile, change the base image to `alpine:3.4`, rebuild and push
 
 ```bash
-docker build . -t <Minikube_IP>:30003/library/demo-api:secure
-docker push <Minikube_IP>:30003/library/demo-api:secure
+docker build . -t $MINIKUBE_IP:30003/library/demo-api:secure
+docker push $MINIKUBE_IP:30003/library/demo-api:secure
 ```
 
 Then change the deployment yaml `demo-api.yaml` to reference your new secure image, with the secure tag and redeploy.
