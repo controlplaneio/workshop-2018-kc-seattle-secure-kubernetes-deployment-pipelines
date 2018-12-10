@@ -7,14 +7,14 @@ When running a cluster, you would normally add the Harbor CA to your cluster's t
 
 ```bash
 minikube start
-minikube ip
+MINIKUBE_IP=$(minikube ip)
 minikube stop
 ```
 
 Then start the cluster with the insecure registry flag.
 
 ```bash
-minikube start --insecure-registry=<Minikube_IP>:30003
+minikube start --insecure-registry=$MINIKUBE_IP:30003
 ```
 
 We will deploy our registry as an application in minikube, using the harbor setup. To install Harbor run:
