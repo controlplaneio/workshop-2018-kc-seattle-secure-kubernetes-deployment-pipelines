@@ -68,7 +68,8 @@ Verify that Harbor is now trusted by logging in to the registry.
 docker login -u admin -p kubecon1234 <Minikube_IP>:30003
 ```
 
-If you get a 400 Bad Requets error, wait a minute and try again.
+If you get a `400 Bad Request` error, wait a minute and try again.
+
 Head to `<Minikube_IP>:30003/harbor/sign-in` to login to the Harbor UI. Username is `admin`, password is `kubecon1234`. You may need to add a security exception in the browser as the certificate issuer is untrusted.
 
 ### Configure Harbor project to use Clair
