@@ -11,7 +11,7 @@ Using Notary, you can digitally sign and then verify the content of your contain
 1. Enable Docker Content Trust.
     ```bash
     export DOCKER_CONTENT_TRUST=1
-    export DOCKER_CONTENT_TRUST_SERVER=https://192.168.99.100:30003
+    export DOCKER_CONTENT_TRUST_SERVER=https://$MINIKUBE_IP:30003
     ```
 
 2. Push an image to Harbor. Your image will push as normal, but afterwards you'll be prompted to create passphrases for two signing keys:
@@ -21,8 +21,8 @@ Using Notary, you can digitally sign and then verify the content of your contain
     Make sure to set these passphrases to something that you remember, because you'll need to refer back to them. In this demo they can be the same thing, but in production it's safer to use different passphrases for each key.
 
     ```bash
-    docker tag <Minikube_IP>:30003/library/demo-api:secure <Minikube_IP>:30003/library/demo-api:signed
-    docker push <Minikube_IP>:30003/library/demo-api:signed
+    docker tag $MINIKUBE_IP:30003/library/demo-api:secure $MINIKUBE_IP:30003/library/demo-api:signed
+    docker push $MINIKUBE_IP:30003/library/demo-api:signed
     ```
 
 3. You can check your image signature by using `docker trust inspect <Minikube_IP>:30003/library/demo-api:signed`.
@@ -38,13 +38,13 @@ Using Notary, you can digitally sign and then verify the content of your contain
 
     2. Add your key as a signer in Notary.
         ```bash
-        docker trust signer add --key=portierisdemo.pub portierisdemo <Minikube_IP>:30003/library/demo-api
+        docker trust signer add --key=portierisdemo.pub portierisdemo $MINIKUBE_IP:30003/library/demo-api
         ```
 
 5. Let's look at the image that we pushed in part 1, for comparison.
 
     ```bash
-    docker trust inspect <Minikube_IP>:30003/library/demo-api:secure
+    docker trust inspect $MINIKUBE_IP:30003/library/demo-api:secure
     ```
 
     This image wasn't signed when we pushed it, so we get a message saying that there's no trust information:
@@ -199,7 +199,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
     10. Sign the image using your `portierisdemo` key. Images are automatically signed using all the keys that you have, so running the sign command adds a signature for your newly created key.
         ```bash
-        docker trust sign <Minikube_IP>:30003/library/demo-api:signed
+        docker trust sign $MINIKUBE_IP:30003/library/demo-api:signed
         ```
 
     11. Try to deploy your signed image once more. This time, the deployment is allowed.
