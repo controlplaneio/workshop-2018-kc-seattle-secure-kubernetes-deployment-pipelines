@@ -31,7 +31,6 @@ Using Notary, you can digitally sign and then verify the content of your contain
 
     1. Create a signing key called `portierisdemo`.
         ```bash
-        cd ~
         docker trust key generate portierisdemo
         ```
         The private key goes in to your Docker Content Trust directory. The public key is saved to `portierisdemo.pub` in your working directory.
