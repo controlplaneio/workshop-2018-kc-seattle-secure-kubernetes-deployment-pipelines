@@ -43,7 +43,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
 1. Retrieve the CA cert from Kubernetes
 
     ```bash
-    kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -d > harbor-ca.crt
+    kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -D > harbor-ca.crt
     ```
 
 2. Add trusted root certificate
