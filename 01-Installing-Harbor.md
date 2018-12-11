@@ -72,7 +72,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
 3. Verify that Harbor is now trusted by logging in to the registry.
 
     ```bash
-    docker login -u admin -p kubecon1234 <Minikube_IP>:30003
+    docker login -u admin -p kubecon1234 $MINIKUBE_IP:30003
     ```
 
     If you get a `400 Bad Request` error, wait a minute and try again.
