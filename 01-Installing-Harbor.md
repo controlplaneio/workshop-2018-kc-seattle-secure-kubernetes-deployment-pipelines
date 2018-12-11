@@ -51,7 +51,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
     **OSX**
 
     ```bash
-    sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain harbor-ca.crt
+    sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain > harbor-ca.crt
     # Then restart your Docker Daemon for it to take effect.
     ```
 
