@@ -43,7 +43,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
 1. Retrieve the CA cert from Kubernetes
 
     ```bash
-    kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -d > harbor-ca.crt
+    kubectl get secrets -o json harbor-harbor-nginx | jq -r '.data["ca.crt"]' | base64 -D > harbor-ca.crt
     ```
 
 2. Add trusted root certificate
@@ -51,7 +51,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
     **OSX**
 
     ```bash
-    sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain harbor-ca.crt
+    sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain > harbor-ca.crt
     # Then restart your Docker Daemon for it to take effect.
     ```
 
@@ -72,7 +72,7 @@ Adding the certificates to your machine's trusted CAs is not necessary to deploy
 3. Verify that Harbor is now trusted by logging in to the registry.
 
     ```bash
-    docker login -u admin -p kubecon1234 <Minikube_IP>:30003
+    docker login -u admin -p kubecon1234 $MINIKUBE_IP:30003
     ```
 
     If you get a `400 Bad Request` error, wait a minute and try again.
