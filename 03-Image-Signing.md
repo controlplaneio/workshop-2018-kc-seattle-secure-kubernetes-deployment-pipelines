@@ -172,10 +172,11 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
         kubectl get pods -l app=demo-api --watch
         ```
 
-    7. Try to deploy your signed image.
+    7. Try to deploy your signed image. Change the image in demo-api.yaml to our signed image: `$MINIKUBE_IP:30003/library/signed-demo-api`
 
         ```bash
-        kubectl apply -f mysigneddeploy.yaml
+        vi setup/demo-api.yaml
+        kubectl apply -f setup/demo-api.yaml
         ```
 
         This deployment is allowed.
