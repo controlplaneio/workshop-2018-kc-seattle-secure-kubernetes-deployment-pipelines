@@ -11,7 +11,7 @@ Using Notary, you can digitally sign and then verify the content of your contain
 1. Enable Docker Content Trust.
     ```bash
     export DOCKER_CONTENT_TRUST=1
-    export DOCKER_CONTENT_TRUST_SERVER=https://$MINIKUBE_IP:30003
+    export DOCKER_CONTENT_TRUST_SERVER=https://$MINIKUBE_IP:30004
     ```
 
 2. Push an image to Harbor. Your image will push as normal, but afterwards you'll be prompted to create passphrases for two signing keys:
@@ -25,7 +25,7 @@ Using Notary, you can digitally sign and then verify the content of your contain
     docker push $MINIKUBE_IP:30003/library/demo-api:signed
     ```
 
-3. You can check your image signature by using `docker trust inspect <Minikube_IP>:30003/library/demo-api:signed`.
+3. You can check your image signature by using `docker trust inspect $MINIKUBE_IP:30003/library/demo-api:signed`.
 
 4. You've signed the image already using the repository key, but this key doesn't prove your identity. The repository key is also unique to that image repository, so you'll create different keys for each image repository that you sign. Notary lets the repository key holder add other people's key pairs so that they can sign the image.
 
