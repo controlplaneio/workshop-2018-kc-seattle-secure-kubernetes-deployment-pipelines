@@ -2,7 +2,7 @@
 
 ## Admission Control
 
-1. Clone https://github.com/stefanprodan/kubesec-webhook
+1. Clone <https://github.com/stefanprodan/kubesec-webhook>
 
     ```bash
     git clone https://github.com/stefanprodan/kubesec-webhook
@@ -38,7 +38,7 @@
     ssion.kubesc.io" denied the request: deployment-test score is -30, deployment minimum accepted score is 0
     ```
 
-6. The deployment is insecure. Let's check why. Create a Bash function to POST YAML to https://kubesec.io.
+6. The deployment is insecure. Let's check why. Create a Bash function to POST YAML to <https://kubesec.io.>
 
     > all sensitive configuration should live in `secrets` -  never leak configuration to a remote service.
 
