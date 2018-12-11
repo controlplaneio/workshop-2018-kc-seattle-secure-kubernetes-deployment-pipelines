@@ -10,6 +10,10 @@ You must have a recent version (18.05+) of Docker to use the `docker trust` comm
 
 Instructions can be found [here](https://docs.docker.com/install/).
 
+## Install Helm
+
+Instructions can be found [here](https://github.com/helm/helm/blob/master/docs/install.md).
+
 ## Install Minikube
 
 Instructions can be found [here](https://github.com/kubernetes/minikube/releases/tag/v0.30.0).

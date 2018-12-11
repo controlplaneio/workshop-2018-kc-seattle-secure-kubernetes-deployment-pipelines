@@ -25,6 +25,7 @@ When running a cluster, you would normally add the Harbor CA to your cluster's t
 3. We will deploy our registry as an application in minikube, using the harbor setup. To install Harbor run:
 
     ```bash
+    helm template setup/harbor --set expose.tls.commonName=$MINIKUBE_IP --set externalURL=https://$MINIKUBE_IP:30003  > setup/harbor.yaml
     kubectl apply -f setup/harbor.yaml
     ```
 
