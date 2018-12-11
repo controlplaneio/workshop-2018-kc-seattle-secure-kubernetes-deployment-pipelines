@@ -22,10 +22,16 @@ Using Notary, you can digitally sign and then verify the content of your contain
 
     ```bash
     docker tag $MINIKUBE_IP:30003/library/demo-api:secure $MINIKUBE_IP:30003/library/demo-api:signed
-    docker push $MINIKUBE_IP:30003/library/demo-api:signed
+    docker push $MINIKUBE_IP:30003/library/signed-demo-api:latest
     ```
 
-3. You can check your image signature by using `docker trust inspect $MINIKUBE_IP:30003/library/demo-api:signed`.
+    **OSX**: If you get a "certificate signed by unknown authority" error, you need to add the Harbor CA to Docker's trusted certificates.
+    ```bash
+    mkdir -p ~/.docker/tls/${MINIKUBE_IP}:30004
+    cp harbor-ca.crt ~/.docker/tls/${MINIKUBE_IP}:30004/ca.crt
+    ```
+
+3. You can check your image signature by using `docker trust inspect --pretty $MINIKUBE_IP:30003/library/signed-demo-api:latest`.
 
 4. You've signed the image already using the repository key, but this key doesn't prove your identity. The repository key is also unique to that image repository, so you'll create different keys for each image repository that you sign. Notary lets the repository key holder add other people's key pairs so that they can sign the image.
 
@@ -37,7 +43,7 @@ Using Notary, you can digitally sign and then verify the content of your contain
 
     2. Add your key as a signer in Notary.
         ```bash
-        docker trust signer add --key=portierisdemo.pub portierisdemo $MINIKUBE_IP:30003/library/demo-api
+        docker trust signer add --key=portierisdemo.pub portierisdemo $MINIKUBE_IP:30003/library/signed-demo-api
         ```
 
 5. Let's look at the image that we pushed in part 1, for comparison.
@@ -65,6 +71,12 @@ Using Notary, you can digitally sign and then verify the content of your contain
     kubectl delete deployment demo-api
     ```
 
+8. Add an ImagePullSecret for Portieris to use to pull trust data from Harbor.
+    ```bash
+    k create secret docker-registry harbor --docker-username=admin --docker-password=kubecon1234 --docker-server=${MINIKUBE_IP}:30003 --docker-email=a@b.com
+    kubectl patch serviceaccount default -p '{"imagePullSecrets":[{"name":"harbor"}]}'
+    ```
+
 ## Portieris
 
 Portieris is a Kubernetes admission controller, open sourced by IBM. It integrates Notary image signing into your deployment pipelines by telling the Kubernetes API server to check with it whenever a resource that results in an image being run is created. It does this via a Mutating Admission Webhook.
@@ -73,7 +85,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
     1. Add self signing CA to Portieris deployemnt
         ```bash
-        sed -i '' "s/ca.pem: <sed-me>/ca.pem: $(cat ca.crt | base64)/" setup/portieris.yaml
+        sed -i '' "s/ca.pem: <sed-me>/ca.pem: $(cat harbor-ca.crt | base64)/" setup/portieris.yaml
         ```
 
     2. Deploy Portieris.
@@ -112,7 +124,11 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
         kubectl edit ClusterImagePolicy portieris-default-cluster-image-policy
         ```
 
-        Look at the `spec` section, and the `repositories` subsection inside it. One image is shown, with `name: "*"` and `policy: null`. `*` is a wildcard character, so this policy matches any image. When the policy is null, we don't apply any trust requirement. Essentially Portieris doesn't do anything at this point. Let's prove that quickly.
+        Look at the `spec` section, and the `repositories` subsection inside it. One image is shown, with `name: "*"` and `policy: trust: enabled: true`. `*` is a wildcard character, so this policy matches any image.
+
+        Change `enabled: true` to `enabled: false`.
+
+        When the policy is not enabled, we don't apply any trust requirement. Essentially Portieris doesn't do anything at this point. Let's prove that quickly.
 
     3. Try to deploy an unsigned image to the cluster. We've created a deployment definition for you.
 
@@ -125,18 +141,19 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
     4. Let's enable trust enforcement for our image. Create a new element in the `repositories` list, after the `*`:
         ```yaml
         repositories:
-            - name: "<Minikube_IP>:30003/library/demo-api"
+            - name: "<Minikube_IP>:30003/library/*demo-api"
               policy:
                 trust:
                   enabled: true
-                  trustServer: "<Minikube_IP>:4443"
+                  trustServer: "<Minikube_IP>:30004"
         ```
 
         Then save and close the file.
 
-    5. Try to deploy your unsigned image again.
+    5. Delete your deployment and then try to deploy your unsigned image again.
 
         ```bash
+        kubectl delete deployment demo-api
         kubectl apply -f setup/demo-api.yaml
         ```
 
@@ -181,7 +198,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
             ```yaml
             repositories:
-                - name: "<Minikube_IP>:30003/library/demo-api"
+                - name: "<Minikube_IP>:30003/library/*demo-api"
                 policy:
                     trust:
                     enabled: true
@@ -198,7 +215,7 @@ Portieris is a Kubernetes admission controller, open sourced by IBM. It integrat
 
     10. Sign the image using your `portierisdemo` key. Images are automatically signed using all the keys that you have, so running the sign command adds a signature for your newly created key.
         ```bash
-        docker trust sign $MINIKUBE_IP:30003/library/demo-api:signed
+        docker trust sign $MINIKUBE_IP:30003/library/signed-demo-api:latest
         ```
 
     11. Try to deploy your signed image once more. This time, the deployment is allowed.
